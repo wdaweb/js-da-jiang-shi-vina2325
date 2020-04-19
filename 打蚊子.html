@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #bg {
+            width: 100vw;
+            height: 100vh;
+            background-image: url(img/room-dark.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+
+
+        }
+
+        #bg>img {
+            position: absolute;
+            height: 100px;
+        }
+
+        #btnStart {
+            margin: auto;
+            position: absolute;
+            width: 100px;
+            height: 50px;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border-radius: 30% 30%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="bg"><audio src="music/320723__djfroyd__mosquito-sound.wav" autoplay loop controls></audio>
+        <input type="button" value="開始遊戲" id="btnStart">
+
+    </div>
+    <script src="jquery-3.5.0.min.js"></script>
+    <script>
+        const turnOn = new Audio();
+        turnOn.src = "music/484719__ccr-fs__turn-on-the-stand.mp3";
+
+        let timeleft = 30;
+
+        let gametimer = 0;
+
+        let mosquito = 0;
+
+        const rand = (num) => {
+            return Math.round(Math.random() * num)
+        }
+
+
+
+        $("#btnStart").click(function () {
+            turnOn.play();
+            setTimeout(() => {
+                $(this).remove();
+                $("#bg").css("background-image", "url('img/room-light.jpg')");
+
+                $("#bg audio").attr("src", "music/3370__heatfuse__mosquito.mp3");
+
+            }, 200);
+
+
+
+            timeleft = 30;
+
+            gametimer = setInterval(() => {
+                const num = rand(10);
+
+                if (num >= 4) {
+                    $("#bg").append(`<img src="img/mosquito1.png" id="ms${mosquito}">`);
+                    $(`#ms${mosquito}`).css({
+                        top: rand(90) + "%", left: rand(90) + "%"
+                    })
+                    mosquito++;
+
+                }
+
+                else if (num > 4 <= 8) {
+                    $("#bg").append(`<img src="img/mosquito2.png" id="ms2${mosquito}">`);
+                    $(`#ms2${mosquito}`).css({
+                        top: rand(90) + "%", left: rand(90) + "%"
+                    })
+                    mosquito++;
+
+                }
+
+                else if (num > 8 < 11) {
+                    $("#bg").append(`<img src="img/mosquito3.png" id="ms3${mosquito}">`);
+                    $(`#ms3${mosquito}`).css({
+                        top: rand(90) + "%", left: rand(90) + "%"
+                    })
+                    mosquito++;
+
+                }
+            }, 1000)
+
+        })
+    </script>
+</body>
+
+</html>
