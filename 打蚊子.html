@@ -18,6 +18,11 @@
 
         }
 
+        .cursor {
+            cursor: url(img/cursor.png)50 50, auto;
+            background-size: 200%;
+        }
+
         #bg>img {
             position: absolute;
             height: 100px;
@@ -48,6 +53,9 @@
         const turnOn = new Audio();
         turnOn.src = "music/484719__ccr-fs__turn-on-the-stand.mp3";
 
+        const die = new Audio();
+        die.src = "music/441653__tonycarlisle__bug-zapper.mp3";
+
         let timeleft = 30;
 
         let gametimer = 0;
@@ -56,6 +64,33 @@
 
         const rand = (num) => {
             return Math.round(Math.random() * num)
+        }
+
+        const move1 = (mosquito) => {
+            $(`#ms${mosquito}`).animate({
+                top: rand(90) + "%",
+                left: rand(90) + "%"
+            }, 3000, function () {
+                move1(mosquito);
+            })
+        }
+
+        const move2 = (mosquito) => {
+            $(`#ms2${mosquito}`).animate({
+                top: rand(90) + "%",
+                left: rand(90) + "%"
+            }, 3000, function () {
+                move2(mosquito);
+            })
+        }
+
+        const move3 = (mosquito) => {
+            $(`#ms3${mosquito}`).animate({
+                top: rand(90) + "%",
+                left: rand(90) + "%"
+            }, 3000, function () {
+                move3(mosquito);
+            })
         }
 
 
@@ -67,6 +102,8 @@
                 $("#bg").css("background-image", "url('img/room-light.jpg')");
 
                 $("#bg audio").attr("src", "music/3370__heatfuse__mosquito.mp3");
+
+                $("#bg").addClass("cursor")
 
             }, 200);
 
@@ -82,6 +119,7 @@
                     $(`#ms${mosquito}`).css({
                         top: rand(90) + "%", left: rand(90) + "%"
                     })
+                    move1(mosquito);
                     mosquito++;
 
                 }
@@ -91,8 +129,8 @@
                     $(`#ms2${mosquito}`).css({
                         top: rand(90) + "%", left: rand(90) + "%"
                     })
+                    move2(mosquito);
                     mosquito++;
-
                 }
 
                 else if (num > 8 < 11) {
@@ -100,10 +138,18 @@
                     $(`#ms3${mosquito}`).css({
                         top: rand(90) + "%", left: rand(90) + "%"
                     })
+                    move3(mosquito);
                     mosquito++;
 
                 }
             }, 1000)
+
+        })
+        $("#bg").on("click", "img", function () {
+            $(this).attr("src", "img/blood.gif")
+
+            $(this).stop();
+            die.play();
 
         })
     </script>
