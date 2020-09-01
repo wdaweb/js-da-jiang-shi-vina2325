@@ -2,157 +2,253 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        #bg {
-            width: 100vw;
-            height: 100vh;
-            background-image: url(img/room-dark.jpg);
-            background-size: cover;
-            background-repeat: no-repeat;
-            position: relative;
-            overflow: hidden;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap');
 
+    html,
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
 
-        }
+    #bg {
+      width: 100vw;
+      height: 100vh;
+      background-image: url(img/room-dark.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .cursor {
-            cursor: url(img/cursor.png)50 50, auto;
-            background-size: 200%;
-        }
+    .cursor {
+      cursor: url(img/cursor.png)50 50, auto;
+      background-size: 200%;
+    }
 
-        #bg>img {
-            position: absolute;
-            height: 100px;
-        }
+    #bg>img {
+      position: absolute;
+      height: 100px;
+    }
 
-        #btnStart {
-            margin: auto;
-            position: absolute;
-            width: 100px;
-            height: 50px;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            border-radius: 30% 30%;
-        }
-    </style>
+    #btnStart {
+      margin: auto;
+      position: absolute;
+      width: 100px;
+      height: 50px;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border-radius: 30% 30%;
+      font-family: 'Noto Sans TC', sans-serif;
+      cursor: pointer;
+    }
+
+    #ingame {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      padding: 10px;
+    }
+
+    #ingame p {
+      margin: 0;
+    }
+
+    .btn {
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      font-size: 1rem;
+      color: white;
+      font-family: 'Noto Sans TC', sans-serif;
+      cursor: pointer;
+    }
+
+    .mosquito {
+      position: absolute;
+      height: 100px;
+    }
+  </style>
 </head>
 
 <body>
 
-    <div id="bg"><audio src="music/320723__djfroyd__mosquito-sound.wav" autoplay loop controls></audio>
-        <input type="button" value="開始遊戲" id="btnStart">
-
+  <div id="bg">
+    <div id="beforegame">
+      <audio src="music/320723__djfroyd__mosquito-sound.wav" loop autoplay></audio>
+      <input type="button" value="開始遊戲" id="btnStart">
     </div>
-    <script src="jquery-3.5.0.min.js"></script>
-    <script>
-        const turnOn = new Audio();
-        turnOn.src = "music/484719__ccr-fs__turn-on-the-stand.mp3";
+    <div id="ingame">
+      <div>
+        <input type="button" value="重新" id="again" class="btn">
+      </div>
+      <p style="color: aliceblue;">分數:<span id="text-score">0</span></p>
+      <p style="color: aliceblue;">剩餘時間:<span id="text-time">60</span>秒</p>
+    </div>
 
-        const die = new Audio();
-        die.src = "music/441653__tonycarlisle__bug-zapper.mp3";
+  </div>
+  <script src="jquery-3.5.0.min.js"></script>
+  <script>
 
-        let timeleft = 30;
+    const turnOn = new Audio();
+    turnOn.src = "music/484719__ccr-fs__turn-on-the-stand.mp3";
 
-        let gametimer = 0;
+    const die = new Audio();
+    die.src = "music/441653__tonycarlisle__bug-zapper.mp3";
 
-        let mosquito = 0;
+    // 分數
+    let score = 0;
+    // 剩餘時間
+    let timeleft = 60;
+    // 遊戲計時器
+    let gametimer = 0;
+    // 蚊子的流水號
+    let mosquito = 0;
+    let inGame = false;
 
-        const rand = (num) => {
-            return Math.round(Math.random() * num)
-        }
+    const rand = (num) => {
+      return Math.round(Math.random() * num)
+    }
 
-        const move1 = (mosquito) => {
-            $(`#ms${mosquito}`).animate({
-                top: rand(90) + "%",
-                left: rand(90) + "%"
-            }, 3000, function () {
-                move1(mosquito);
-            })
-        }
+    const move1 = (mosquito) => {
+      $(`#ms${mosquito}`).animate({
+        top: rand(90) + "%",
+        left: rand(90) + "%"
+      }, 3000, function () {
+        move1(mosquito);
+      })
+    }
 
-        const move2 = (mosquito) => {
-            $(`#ms2${mosquito}`).animate({
-                top: rand(90) + "%",
-                left: rand(90) + "%"
-            }, 3000, function () {
-                move2(mosquito);
-            })
-        }
+    const move2 = (mosquito) => {
+      $(`#ms2${mosquito}`).animate({
+        top: rand(90) + "%",
+        left: rand(90) + "%"
+      }, 3000, function () {
+        move2(mosquito);
+      })
+    }
 
-        const move3 = (mosquito) => {
-            $(`#ms3${mosquito}`).animate({
-                top: rand(90) + "%",
-                left: rand(90) + "%"
-            }, 3000, function () {
-                move3(mosquito);
-            })
-        }
+    const move3 = (mosquito) => {
+      $(`#ms3${mosquito}`).animate({
+        top: rand(90) + "%",
+        left: rand(90) + "%"
+      }, 3000, function () {
+        move3(mosquito);
+      })
+    }
+
+    $('#ingame').hide()
+
+    function start() {
+      $("#btnStart").click(function () {
+        turnOn.play();
+        setTimeout(() => {
+          $(this).remove();
+
+          $("#bg").css("background-image", "url('img/room-light.jpg')");
+
+          $("#bg audio").attr("src", "music/3370__heatfuse__mosquito.mp3");
+
+          $("#bg").addClass("cursor")
+
+          $('#ingame').show()
+          score = 0;
+          $("#text-score").text(score);
+          timeleft = 60;
+          $("#text-time").text(timeleft);
+
+        }, 200);
 
 
+        gametimer = setInterval(() => {
+          // 倒數
+          timeleft--;
+          $("#text-time").text(timeleft);
 
-        $("#btnStart").click(function () {
-            turnOn.play();
+          if (timeleft == 0) {
+            // 停止計時器
+            clearInterval(gametimer);
+            // 啟用開始按鈕
+            $(this).attr("disabled", false);
+            $("#btn-restart").hide(true)
             setTimeout(() => {
-                $(this).remove();
-                $("#bg").css("background-image", "url('img/room-light.jpg')");
-
-                $("#bg audio").attr("src", "music/3370__heatfuse__mosquito.mp3");
-
-                $("#bg").addClass("cursor")
-
-            }, 200);
-
-
-
-            timeleft = 30;
-
-            gametimer = setInterval(() => {
-                const num = rand(10);
-
-                if (num >= 4) {
-                    $("#bg").append(`<img src="img/mosquito1.png" id="ms${mosquito}">`);
-                    $(`#ms${mosquito}`).css({
-                        top: rand(90) + "%", left: rand(90) + "%"
-                    })
-                    move1(mosquito);
-                    mosquito++;
-
-                }
-
-                else if (num > 4 <= 8) {
-                    $("#bg").append(`<img src="img/mosquito2.png" id="ms2${mosquito}">`);
-                    $(`#ms2${mosquito}`).css({
-                        top: rand(90) + "%", left: rand(90) + "%"
-                    })
-                    move2(mosquito);
-                    mosquito++;
-                }
-
-                else if (num > 8 < 11) {
-                    $("#bg").append(`<img src="img/mosquito3.png" id="ms3${mosquito}">`);
-                    $(`#ms3${mosquito}`).css({
-                        top: rand(90) + "%", left: rand(90) + "%"
-                    })
-                    move3(mosquito);
-                    mosquito++;
-
-                }
+              alert(`時間到，總共打到${score} 蚊子`);
+            }, 100)
+            // 清場
+            $("#bg").css("background-image", "url('img/room-dark.jpg')");
+            $('#ingame').hide();
+            inGame = false;
+            setTimeout(() => {
+              window.location.reload();
             }, 1000)
+          }
+          else {
+            inGame = true
+            const num = rand(10);
 
-        })
-        $("#bg").on("click", "img", function () {
-            $(this).attr("src", "img/blood.gif")
+            if (num >= 4) {
+              $("#bg").append(`<img src="img/mosquito1.png" id="ms${mosquito}" class="mosquito">`);
+              $(`#ms${mosquito}`).css({
+                top: rand(90) + "%", left: rand(90) + "%"
+              })
+              move1(mosquito);
+              mosquito++;
 
-            $(this).stop();
-            die.play();
+            }
 
-        })
-    </script>
+            else if (num > 4 <= 8) {
+              $("#bg").append(`<img src="img/mosquito2.png" id="ms2${mosquito}" class="mosquito">`);
+              $(`#ms2${mosquito}`).css({
+                top: rand(90) + "%", left: rand(90) + "%"
+              })
+              move2(mosquito);
+              mosquito++;
+            }
+
+            else if (num > 8 < 11) {
+              $("#bg").append(`<img src="img/mosquito3.png" id="ms3${mosquito}" class="mosquito">`);
+              $(`#ms3${mosquito}`).css({
+                top: rand(90) + "%", left: rand(90) + "%"
+              })
+              move3(mosquito);
+              mosquito++;
+
+            }
+          }
+        }, 1000)
+
+      })
+
+    }
+
+
+    $("#bg").on("click", "img", function () {
+      $(this).attr("src", "img/blood.gif")
+      $(this).stop();
+      die.play();
+      setTimeout(() => {
+        $(this).remove()
+      }, 200);
+      score++;
+      $("#text-score").text(score);
+    })
+
+    start();
+    $("#again").click(function () {
+      score = 0;
+      $("#text-score").text(score);
+      timeleft = 60;
+      $("#text-time").text(timeleft);
+      $(".mosquito").remove("");
+      start();
+    })
+
+  </script>
 </body>
 
 </html>
